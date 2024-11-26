@@ -71,6 +71,8 @@ int main(void) {
         };
 
         GLCall(glEnable(GL_BLEND));
+        // 两个参数分别代表blend时新的颜色输出与该位置原有的颜色的权值
+        // 例如这里将src(新画的)设置为alpha值，dest(原有颜色)权值设置为1-alpha，当新画的颜色全透明时 alpha = 0，即混合的颜色为 新颜色*0+原有颜色*1
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
         // core profile时必须显式自己创建vao，compat profile会使用默认的。
