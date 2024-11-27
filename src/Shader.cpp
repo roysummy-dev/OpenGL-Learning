@@ -40,6 +40,10 @@ void Shader::SetUniform4f(const std::string &name, float v0, float v1, float v2,
     GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 }
 
+void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &matrix) {
+    GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+}
+
 // 从文件中读取读取shader
 ShaderProgramSource Shader::ParseShader(const std::string &filepath) {
     std::ifstream stream(filepath);
@@ -99,7 +103,7 @@ unsigned int Shader::CreateShader(const std::string &vertexShader, const std::st
 
     glAttachShader(program, vs);
     glAttachShader(program, fs);
-    glLinkProgram(program);
+    GLCall(glLinkProgram(program));
     glValidateProgram(program);
 
     glDeleteShader(vs);
@@ -110,13 +114,13 @@ unsigned int Shader::CreateShader(const std::string &vertexShader, const std::st
 
 int Shader::GetUniformLocation(const std::string &name) {
     if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
-        // std::cout << "Cache hit." << std::endl;
+        std::cout << "Cache hit, uniform name: " << name << ", value: " << m_UniformLocationCache[name] << std::endl;
         return m_UniformLocationCache[name];
     }
     unsigned int id = -1;
     GLCall(id = glGetUniformLocation(m_RendererID, name.c_str()));
     if (id == -1) {
-        std::cout << "Get Location Error" << std::endl;
+        std::cout << "Get Location Error, Uniform name: " << name << std::endl;
     }
     m_UniformLocationCache[name] = id;
     return id;

@@ -17,6 +17,9 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 
 int main(void) {
     GLFWwindow *window;
@@ -59,10 +62,10 @@ int main(void) {
         std::cout << glGetString(GL_VERSION) << std::endl;
 
         float positions[] = {
-                -0.6f, -0.5f, 0.0f, 0.0f,   //0 position, texture coordinate
-                0.6f, -0.5f, 1.0f, 0.0f,    //1
-                0.6f, 0.5f, 1.0f, 1.0f,    //2
-                -0.6f, 0.5f, 0.0f, 1.0f, //3
+                -0.5f, -0.5f, 0.0f, 0.0f,   //0 position, texture coordinate
+                0.5f, -0.5f, 1.0f, 0.0f,    //1
+                0.5f, 0.5f, 1.0f, 1.0f,    //2
+                -0.5f, 0.5f, 0.0f, 1.0f, //3
         };
 
         unsigned int indicies[] = {
@@ -90,6 +93,9 @@ int main(void) {
         // 使用封装的类代替 index buffer绑定和填充
         IndexBuffer ib(indicies, 6);
 
+        // 投影矩阵为正交矩阵，目的在于将所画的内容缩放到4:3，与窗口比例统一
+        glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
         Shader shader("../res/Shaders/Basic.shader");
 //        ShaderProgramSource source = ParseShader("../res/Shaders/Basic.shader");
 //        unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
@@ -100,7 +106,8 @@ int main(void) {
 //        GLCall(int location = glGetUniformLocation(shader, "u_Color"));
 //        ASSERT(location != -1);
 //        GLCall(glUniform4f(location, 1.0f, 0.3f, 0.8f, 1.0f));
-        shader.SetUniform4f("u_Color", 1.0f, 0.3f, 0.8f, 1.0f);
+        // shader.SetUniform4f("u_Color", 1.0f, 0.3f, 0.8f, 1.0f);
+        shader.SetUniformMat4f("u_MVP", proj);
         float r = 1.0f;
         float increment = 0.02f;
 
@@ -123,7 +130,7 @@ int main(void) {
             renderer.Clear();
             shader.Bind();
             // 模拟切换到渲染当前正方形的上下文环境。
-            shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+            // shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
             renderer.Draw(va, ib, shader);
 
