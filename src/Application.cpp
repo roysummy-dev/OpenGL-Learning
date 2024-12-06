@@ -103,7 +103,7 @@ int main(void) {
         shader.Bind();
 
         // 这是旧的获取uniform location的方法，4.3之后可以通过递增的location来获取。
-//        GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+//        GLCall(int location = glGetUniformLocation(shader, "u_Color"))
 //        ASSERT(location != -1);
 //        GLCall(glUniform4f(location, 1.0f, 0.3f, 0.8f, 1.0f));
         // shader.SetUniform4f("u_Color", 1.0f, 0.3f, 0.8f, 1.0f);
