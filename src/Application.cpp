@@ -61,11 +61,12 @@ int main(void) {
         // 打印opengl版本
         std::cout << glGetString(GL_VERSION) << std::endl;
 
+
         float positions[] = {
-                -0.5f, -0.5f, 0.0f, 0.0f,   //0 position, texture coordinate
-                0.5f, -0.5f, 1.0f, 0.0f,    //1
-                0.5f, 0.5f, 1.0f, 1.0f,    //2
-                -0.5f, 0.5f, 0.0f, 1.0f, //3
+                -0.8, -0.5f, 0.0f, 0.0f,   //0 position, texture coordinate
+                0.8f, -0.5f, 1.0f, 0.0f,    //1
+                0.8f, 0.5f, 1.0f, 1.0f,    //2
+                -0.8f, 0.5f, 0.0f, 1.0f, //3
         };
 
         unsigned int indicies[] = {
@@ -94,6 +95,8 @@ int main(void) {
         IndexBuffer ib(indicies, 6);
 
         // 投影矩阵为正交矩阵，目的在于将所画的内容缩放到4:3，与窗口比例统一
+        // ortho矩阵的作用是将在这个box范围内的坐标缩放到标准设备坐标，例如这里(left,right)为(-2,2)，因此在x范围内就只会渲染在-2到2的内容
+        // 并且此时中间的坐标就是0，最左侧坐标是-2，提供的坐标为-0.5时最终它所在的位置就是中间然后往左1/4。
         glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 
         Shader shader("../res/Shaders/Basic.shader");
