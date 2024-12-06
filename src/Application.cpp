@@ -102,7 +102,7 @@ int main(void) {
         glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
         // view矩阵的作用是camera的位置、旋转、缩放，opengl里面没有类似unity一样的一个相机可以用来控制，是通过操作vertices来模拟相机的运动
         // 例如这里向左移动1.2f，用来模拟相机向右移动1.2f，由于左边的顶点x为-0.8，相机往右移动1.2之后渲染的图像左边就到窗口的最左边了
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.2f,0.0f,0.0f));
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
         Shader shader("../res/Shaders/Basic.shader");
 //        ShaderProgramSource source = ParseShader("../res/Shaders/Basic.shader");
@@ -136,7 +136,8 @@ int main(void) {
         ImGui_ImplGlfwGL3_Init(window, true);
         ImGui::StyleColorsDark();
 
-        glm::vec3 translation(0.0f,0.5f,0.0f);
+        glm::vec3 translationA(0.0f, 0.5f, 0.0f);
+        glm::vec3 translationB(0.0f, -0.5f, 0.0f);
 
         bool show_demo_window = true;
         bool show_another_window = false;
@@ -149,16 +150,23 @@ int main(void) {
 
             ImGui_ImplGlfwGL3_NewFrame();
 
-            shader.Bind();
-            // 模拟切换到渲染当前正方形的上下文环境。
-            // shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+            // 修改shader中的mvp矩阵，其他的vertex buffer、index buffer都不变，调用两次draw element
+            // 就可以达到渲染两个物体的效果，同样的也可以修改vertex buffer来达到同样的效果。
+            {
+                shader.Bind();
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+                glm::mat4 mvp = proj * view * model;
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
 
-            // model矩阵的作用是model的位置、旋转、缩放。这里表示将图像向上移动0.5
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-            glm::mat4 mvp = proj*view*model;
-            shader.SetUniformMat4f("u_MVP", mvp);
-
-            renderer.Draw(va, ib, shader);
+            {
+                shader.Bind();
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+                glm::mat4 mvp = proj * view * model;
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
 
 
             if (r >= 1.0f) {
@@ -171,8 +179,10 @@ int main(void) {
 
 
             {
-                ImGui::SliderFloat3("Translation", &translation.x, -2.0f, 2.0f);
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                ImGui::SliderFloat3("Translation A", &translationA.x, -2.0f, 2.0f);
+                ImGui::SliderFloat3("Translation B", &translationB.x, -2.0f, 2.0f);
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+                            ImGui::GetIO().Framerate);
             }
 
             ImGui::Render();
