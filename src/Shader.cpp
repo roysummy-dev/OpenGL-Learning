@@ -114,7 +114,7 @@ unsigned int Shader::CreateShader(const std::string &vertexShader, const std::st
 
 int Shader::GetUniformLocation(const std::string &name) {
     if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
-        std::cout << "Cache hit, uniform name: " << name << ", value: " << m_UniformLocationCache[name] << std::endl;
+        // std::cout << "Cache hit, uniform name: " << name << ", value: " << m_UniformLocationCache[name] << std::endl;
         return m_UniformLocationCache[name];
     }
     unsigned int id = -1;
