@@ -13,13 +13,15 @@ add_subdirectory(${ROOT_DIR}/3rd/glfw)
 #set(OPENGL_LEARN_SRC src/Application.cpp src/Renderer.cpp src/VertexBuffer.cpp src/IndexBuffer.cpp)
 #message(${OPENGL_LEARN_SRC})
 aux_source_directory(${ROOT_DIR}/src/ OPENGL_LEARN_SRC)
+aux_source_directory(${ROOT_DIR}/3rd/imgui OPENGL_LEARN_SRC)
 
 add_executable(OpenGL_Learning ${OPENGL_LEARN_SRC})
 
 
 target_include_directories(OpenGL_Learning PUBLIC
         ${ROOT_DIR}/3rd/include
-        ${ROOT_DIR}/3rd/include/stb_image)
+        ${ROOT_DIR}/3rd/include/stb_image
+        ${ROOT_DIR}/3rd/imgui)
 
 target_link_directories(OpenGL_Learning PUBLIC
         ${ROOT_DIR}/3rd/libs)
